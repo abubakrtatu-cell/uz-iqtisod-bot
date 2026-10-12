@@ -1,0 +1,48 @@
+name: Iqtisodiy yangiliklar boti
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # har 30 daqiqada (UTC vaqtida)
+  workflow_dispatch:           # "Run workflow" tugmasi bilan qo'lda ishga tushirish
+
+permissions:
+  contents: write              # data/seen.json ni saqlash uchun
+
+concurrency:
+  group: newsbot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Kutubxonalarni o'rnatish
+        run: pip install -r requirements.txt
+
+      - name: Botni ishga tushirish
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python bot.py
+
+      - name: Yuborilganlar ro'yxatini saqlash
+        if: always()
+        run: |
+          [ -f data/seen.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/seen.json
+          if git diff --cached --quiet; then echo "O'zgarish yo'q"; exit 0; fi
+          git commit -m "holat yangilandi [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase --autostash && git push && break
+            sleep 5
+          done
