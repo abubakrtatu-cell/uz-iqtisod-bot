@@ -110,6 +110,32 @@ FOREIGN_SOURCES = [
         "require_uzbekistan": True,
         "require_keywords": True,
     },
+    # --- Google News: islohotlar, pensiya, yer, mehnat bozori, tadbirkorlik ---
+    {
+        "name": "Google News (EN, islohotlar)",
+        "type": "google",
+        "lang": "EN",
+        "url": google_news(
+            'Uzbekistan (pension OR "land reform" OR "land ownership" OR unemployment OR poverty '
+            'OR entrepreneurs OR "small business" OR "private sector" OR macroeconomic '
+            'OR "real estate" OR agriculture OR subsidies) when:1d',
+            "en", "US",
+        ),
+        "require_uzbekistan": True,
+        "require_keywords": True,
+    },
+    {
+        "name": "Google News (RU, islohotlar)",
+        "type": "google",
+        "lang": "RU",
+        "url": google_news(
+            "Узбекистан (пенсии OR земельная OR \"земельные участки\" OR безработица OR бедность "
+            "OR предприниматели OR \"малый бизнес\" OR макроэкономика OR недвижимость OR субсидии) when:1d",
+            "ru", "RU",
+        ),
+        "require_uzbekistan": True,
+        "require_keywords": True,
+    },
     # --- Bing News: zaxira manba (Google o'tkazib yuborganlarini topadi) ---
     {
         "name": "Bing News (EN)",
@@ -156,22 +182,24 @@ FOREIGN_SOURCES = [
 #       "filter" -> faqat iqtisod/moliyaga oid postlar yuboriladi (umumiy yangilik kanallari)
 # Faqat ochiq (public) kanallar ishlaydi.
 
+# HOZIR O'CHIRILGAN: bot faqat chet el manbalaridan yangilik yuboradi.
+# Kanallarni qayta yoqish uchun kerakli qatorlar boshidagi "# " belgisini olib tashlang.
 TELEGRAM_CHANNELS = [
     # Rasmiy iqtisodiy idoralar
-    {"username": "centralbankuzbekistan", "mode": "all"},     # Markaziy bank
-    {"username": "minecofinuz",           "mode": "all"},     # Iqtisodiyot va moliya vazirligi
-    {"username": "uzstataxborot",         "mode": "all"},     # Milliy statistika qo'mitasi
+    # {"username": "centralbankuzbekistan", "mode": "all"},     # Markaziy bank
+    # {"username": "minecofinuz",           "mode": "all"},     # Iqtisodiyot va moliya vazirligi
+    # {"username": "uzstataxborot",         "mode": "all"},     # Milliy statistika qo'mitasi
     # Biznes va moliya nashrlari
-    {"username": "spotuz",                "mode": "filter"},  # Spot.uz (ruscha)
-    {"username": "spotuz_uz",             "mode": "filter"},  # Spot.uz (o'zbekcha)
-    {"username": "pul_top_uzb",           "mode": "all"},     # Pultop: kurslar, omonatlar, kreditlar
+    # {"username": "spotuz",                "mode": "filter"},  # Spot.uz (ruscha)
+    # {"username": "spotuz_uz",             "mode": "filter"},  # Spot.uz (o'zbekcha)
+    # {"username": "pul_top_uzb",           "mode": "all"},     # Pultop: kurslar, omonatlar, kreditlar
     # Umumiy yangilik kanallari (faqat iqtisodiy xabarlar olinadi)
-    {"username": "kunuzofficial",         "mode": "filter"},  # Kun.uz
-    {"username": "kunuzru",               "mode": "filter"},  # Kun.uz (ruscha)
-    {"username": "daryo",                 "mode": "filter"},  # Daryo
-    {"username": "gazetauz",              "mode": "filter"},  # Gazeta.uz (ruscha)
-    {"username": "gazetauz_ozb",          "mode": "filter"},  # Gazeta.uz (o'zbekcha)
-    {"username": "uzdaily",               "mode": "filter"},  # UzDaily (ruscha)
+    # {"username": "kunuzofficial",         "mode": "filter"},  # Kun.uz
+    # {"username": "kunuzru",               "mode": "filter"},  # Kun.uz (ruscha)
+    # {"username": "daryo",                 "mode": "filter"},  # Daryo
+    # {"username": "gazetauz",              "mode": "filter"},  # Gazeta.uz (ruscha)
+    # {"username": "gazetauz_ozb",          "mode": "filter"},  # Gazeta.uz (o'zbekcha)
+    # {"username": "uzdaily",               "mode": "filter"},  # UzDaily (ruscha)
     # Yangi kanal qo'shish: {"username": "kanal_nomi", "mode": "filter"},
 ]
 
@@ -222,6 +250,37 @@ ECONOMY_KEYWORDS = [
     r"\bworld bank", r"\badb\b", r"\bebrd\b", r"\baiib\b", r"\bwto\b", r"\bcustoms",
     r"\bremittance", r"\bipo\b", r"\bfitch", r"\bmoody", r"\bs&p\b", r"\bmining",
     r"\buranium", r"\bcopper", r"\bmarket", r"\bfintech", r"\bdeal\b", r"\bfund\b",
+    # ================= QO'SHIMCHA MAVZULAR =================
+    # --- Pensiya va ijtimoiy himoya ---
+    r"\bpensiya", r"\bpensioner", r"\bnafaqa", r"\bijtimoiy himoya", r"\bijtimoiy to'lov",
+    r"\bнафақа", r"\bижтимоий ҳимоя", r"\bпенси", r"\bпособи", r"\bсоцзащит",
+    r"\bсоциальн\w* (?:защит|выплат)", r"\bpension", r"\bsocial (?:protection|security|benefit|assistance)",
+    r"\bwelfare",
+    # --- Yer islohoti, ko'chmas mulk ---
+    r"\byer(?:ga|ni|lar|larni|larga|ning)?\s+(?:uchastka|maydon|islohot|kodeks|auksion|ijara|egalik|resurs|solig|bozor|huquq|munosabat|xususiy)",
+    r"\bqishloq xo'jaligi yer", r"\bkadastr", r"\bko'chmas mulk", r"\bmulk huquq", r"\bauksion",
+    r"\bер(?:га|ни|лар|ларни)?\s+(?:участка|майдон|ислоҳот|кодекс|аукцион|ижара|эгалик|ресурс|солиғ|бозор|ҳуқуқ|муносабат)",
+    r"\bкадастр", r"\bкўчмас мулк", r"\bаукцион",
+    r"\bземельн", r"\bсельхозземл", r"\bземлепольз", r"\bнедвижимост",
+    r"\bland (?:reform|plot|ownership|privati\w*|auction|code|market|rights|lease)", r"\breal estate",
+    r"\bproperty rights", r"\bcadastr",
+    # --- Makroiqtisodiy ko'rsatkichlar, mehnat bozori ---
+    r"makroiqtisod", r"макроиқтисод", r"макроэконом", r"macroecon",
+    r"\bishsiz", r"\bbandlik", r"\bish o'rin", r"\bmehnat bozor", r"\bmehnat migra", r"\bkambag'al",
+    r"\bqashshoq", r"\bto'lov balans", r"\bdefitsit", r"\bprofitsit", r"\b(?:oltin-valyuta|xalqaro) zaxira",
+    r"\bишсиз", r"\bбандлик", r"\bиш ўрин", r"\bкамбағал", r"\bмеҳнат бозор", r"\bмеҳнат мигра",
+    r"\bбезработ", r"\bзанятост", r"\bбедност", r"\bплатежн\w* баланс", r"\bрын\w* труда",
+    r"\bтрудов\w* мигра", r"\bдефицит", r"\bпрофицит",
+    r"\bunemploy", r"\bemployment", r"\bpoverty", r"\blabou?r market", r"\bbalance of payments",
+    r"\bdeficit", r"\bsurplus", r"\bremittances?\b",
+    # --- Tadbirkorlik, qishloq xo'jaligi, uy-joy ---
+    r"\bsubsidiya", r"\bimtiyoz", r"\bfermer", r"\bqishloq xo'jalig", r"\bdehqon", r"\bklaster",
+    r"\bxususiy sektor", r"\bdavlat xarid", r"\bstartap", r"\buy-joy", r"\bkommunal",
+    r"\bсубсиди", r"\bимтиёз", r"\bфермер", r"\bқишлоқ хўжалиг", r"\bдеҳқон", r"\bхусусий сектор",
+    r"\bуй-жой", r"\bкоммунал", r"\bльгот", r"\bсельхоз", r"\bсельск\w* хозяйств", r"\bчастн\w* сектор",
+    r"\bгосзакуп", r"\bстартап", r"\bмсб\b", r"\bжиль[её]\b", r"\bжилищн",
+    r"\bsubsid", r"\bentrepreneur", r"\bsmes?\b", r"\bsmall business", r"\bprivate sector",
+    r"\bagricultur", r"\bfarmers?\b", r"\bstartups?\b", r"\bprocurement", r"\bhousing",
 ]
 
 # O'zbekiston tilga olinganini aniqlash (xorijiy manbalar uchun)

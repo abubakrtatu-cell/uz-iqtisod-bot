@@ -601,12 +601,15 @@ def finalize_chats(state):
 # Asosiy jarayon
 # ---------------------------------------------------------------------------
 
-WELCOME = (
-    "✅ <b>Bot ishga tushdi!</b>\n\n"
-    "Endi har 30 daqiqada {f} ta xorijiy manba va {t} ta Telegram kanaldagi O'zbekiston "
-    "iqtisodiyoti va moliyasiga oid yangiliklar shu yerga keladi.\n\n"
-    "#xorij — chet el saytlari, #telegram — o'zbek kanallari"
-)
+def welcome_text():
+    f, t = len(config.FOREIGN_SOURCES), len(config.TELEGRAM_CHANNELS)
+    where = f"{f} ta xorijiy manba va {t} ta Telegram kanaldagi" if t else f"{f} ta xorijiy manbadagi"
+    tags = "#xorij — chet el saytlari" + (", #telegram — o'zbek kanallari" if t else "")
+    return (
+        "✅ <b>Bot ishga tushdi!</b>\n\n"
+        f"Endi har 30 daqiqada {where} O'zbekiston iqtisodiyoti va moliyasiga oid "
+        "yangiliklar shu yerga keladi.\n\n" + tags
+    )
 
 
 def collect():
@@ -690,7 +693,7 @@ def run_once(dry_run=False):
     # Guruh/kanallarga daqiqasiga 20 tadan ko'p yuborib bo'lmaydi
     has_group = any(c.startswith(("-", "@")) for c in targets)
     delay = max(config.SEND_DELAY_SECONDS, 3.1) if has_group else config.SEND_DELAY_SECONDS
-    welcome = WELCOME.format(f=len(config.FOREIGN_SOURCES), t=len(config.TELEGRAM_CHANNELS))
+    welcome = welcome_text()
 
     if not initialized:
         send_to(targets, welcome)
